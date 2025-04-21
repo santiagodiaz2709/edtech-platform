@@ -22,4 +22,73 @@
            relatedInterest: 'NBA'
          },
          {
-           question: 'What is the main theme of the song "Bohemian Rh
+           question: 'What is the main theme of the song "Bohemian Rhapsody"?',
+           answer: 'The internal struggle and confession of a young man',
+           topic: 'Reading Comprehension',
+           difficulty: 'hard',
+           relatedInterest: 'music'
+         }
+       ];
+
+       const practice = new Practice({
+         user: req.user._id,
+         testType,
+         questions: mockQuestions,
+         score: 0,
+         timeSpent: 0
+       });
+
+       await practice.save();
+
+       res.json({ test: practice });
+     } catch (error) {
+       res.status(500).json({ message: 'Error generating test' });
+     }
+   });
+
+   // Submit diagnostic test results
+   router.post('/diagnostic', auth, async (req, res) => {
+     try {
+       const { testType, sections, totalScore } = req.body;
+
+       const diagnostic = new Diagnostic({
+         user: req.user._id,
+         testType,
+         sections,
+         totalScore
+       });
+
+       await diagnostic.save();
+
+       res.status(201).json({ diagnostic });
+     } catch (error) {
+       res.status(500).json({ message: 'Error saving diagnostic results' });
+     }
+   });
+
+   // Get user's practice history
+   router.get('/history', auth, async (req, res) => {
+     try {
+       const practices = await Practice.find({ user: req.user._id })
+         .sort({ createdAt: -1 })
+         .limit(10);
+
+       res.json({ practices });
+     } catch (error) {
+       res.status(500).json({ message: 'Error fetching practice history' });
+     }
+   });
+
+   // Get user's diagnostic results
+   router.get('/diagnostic', auth, async (req, res) => {
+     try {
+       const diagnostics = await Diagnostic.find({ user: req.user._id })
+         .sort({ createdAt: -1 });
+
+       res.json({ diagnostics });
+     } catch (error) {
+       res.status(500).json({ message: 'Error fetching diagnostic results' });
+     }
+   });
+
+   module.exports = router;
