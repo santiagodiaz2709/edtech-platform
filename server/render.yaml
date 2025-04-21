@@ -1,0 +1,23 @@
+   services:
+     - type: web
+       name: edtech-platform-backend
+       env: node
+       buildCommand: npm install
+       startCommand: npm start
+       envVars:
+         - key: NODE_ENV
+           value: production
+         - key: PORT
+           value: 8080
+         - key: MONGODB_URI
+           sync: false
+         - key: JWT_SECRET
+           sync: false
+         - key: JWT_EXPIRATION
+           value: 7d
+         - key: STRIPE_SECRET_KEY
+           sync: false
+         - key: STRIPE_WEBHOOK_SECRET
+           sync: false
+         - key: FRONTEND_URL
+           value: https://snazzy-quokka-48627f.netlify.app
